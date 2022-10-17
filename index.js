@@ -96,6 +96,17 @@ app.get("/", async (req, res) => {
   const files = response.data.files;
   res.send(files);
 });
+app.get("/look/:file_name", async (req, res) => {
+  const auth = await authorize();
+  const drive = google.drive({ version: "v3", auth: auth });
+  const response = await drive.files.list({
+    q: `name contains '${req.params.file_name}'`,
+    fields: "nextPageToken, files(id, name)",
+  });
+  const files = response.data.files;
+
+  res.send(files);
+});
 /**
  * Load or request or authorization to call APIs.
  *
